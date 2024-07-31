@@ -24,11 +24,9 @@ RPN & RPN::operator=(RPN & copy) {
 
 long long int RPN::evaluate(void) {
 	std::stack<short> number;
-	long long int result = 0;
-	long long int old = result;
+	long long int old = 0;
+	long long int number_buffer = 0;
 	std::string buffer;
-	bool first = true;
-	
 	
 	this->data >> buffer;
 	while (this->data.rdbuf()->in_avail()) {
@@ -36,62 +34,63 @@ long long int RPN::evaluate(void) {
 			throw (std::invalid_argument("error in the decoding of the RPN expression (invlalid number or operator)"));
 		if (std::isdigit(buffer[0]))
 			number.push(buffer[0] - '0');
-		else if (buffer[0] == '-') {
-			if (first) {
-				result = number.top();
-				number.pop();
-				first = false;
-			}
-			old = result;
-			result -= number.top();
-			if (result + number.top() != old)
-				throw (std::invalid_argument("overflow / underflow"));
-			number.pop();
-		}
 		else if (buffer[0] == '+') {
-			if (first) {
-				result = number.top();
-				number.pop();
-				first = false;
-			}
-			old = result;
-			result += number.top();
-			if (result - number.top() != old)
+			if (number.size() < 2)
+				throw(std::invalid_argument("missing number"));
+			number_buffer = number.top();
+			old = number.top();
+			number.pop();
+			number_buffer = number.top() + number_buffer;
+			if (number_buffer - old != number.top())
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
+			number.push(number_buffer);
+		}
+		else if (buffer[0] == '-') {
+			if (number.size() < 2)
+				throw(std::invalid_argument("missing number"));
+			number_buffer = number.top();
+			old = number.top();
+			number.pop();
+			number_buffer = number.top() - number_buffer;
+			if (number_buffer + old != number.top())
+				throw (std::invalid_argument("overflow / underflow"));
+			number.pop();
+			number.push(number_buffer);
 		}
 		else if (buffer[0] == '*') {
-			if (first) {
-				result = number.top();
-				number.pop();
-				first = false;
-			}
-			old = result;
-			result *= number.top();
-			if (result / number.top() != old)
+			if (number.size() < 2)
+				throw(std::invalid_argument("missing number"));
+			number_buffer = number.top();
+			old = number.top();
+			number.pop();
+			number_buffer = number.top() * number_buffer;
+			if (number_buffer / old != number.top())
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
+			number.push(number_buffer);
 		}
 		else if (buffer[0] == '/') {
-			if (first) {
-				result = number.top();
-				number.pop();
-				first = false;
-			}
-			old = result;
-			result /= number.top();
-			if (result * number.top() != old)
+			if (number.size() < 2)
+				throw(std::invalid_argument("missing number"));
+			number_buffer = number.top();
+			old = number.top();
+			number.pop();
+			number_buffer = number.top() / number_buffer;
+			if (number_buffer * old != number.top())
 				throw (std::invalid_argument("overflow / underflow"));
-			number.pop();	
+			number.pop();
+			number.push(number_buffer);
 		}
 		else
 			throw (std::invalid_argument("error in the decoding of the RPN expression (invalide char input)"));
+		std::cout << number_buffer << std::endl;
 	
 		this->data >> buffer;
 	}
 
-	if (!number.empty())
+	if (number.size() > 1)
 		throw (std::invalid_argument("error in the decoding of the RPN expression (missing operator)"));
 
-	return (result);
+	return (number.top());
 }
