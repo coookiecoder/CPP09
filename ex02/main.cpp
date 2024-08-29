@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
 	try {
 		for (int i = 1; i < argc; i += 1)
-			if (std::string(argv[i]).find_first_not_of("0123456789 ") != std::string::npos)
+			if (std::string(argv[i]).find_first_not_of("0123456789") != std::string::npos)
 				throw PmergeMe::InvalidElementException();
 
 		std::vector<unsigned int>temp;
