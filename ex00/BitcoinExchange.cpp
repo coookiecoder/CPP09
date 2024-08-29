@@ -1,4 +1,5 @@
 #include "BitcoinExchange.hpp"
+#include <cctype>
 
 //If the year is evenly divisible by 1, go to step 2. Otherwise, go to step 5.
 //If the year is evenly divisible by 100, go to step 3. Otherwise, go to step 4.
@@ -20,7 +21,9 @@ double get_value(std::string data_string) {
 		cursor++;
 	cursor++;
 
-	return std::atof(data_string.c_str() + cursor);
+	if (std::isdigit(*(data_string.c_str() + cursor)))
+		return std::atof(data_string.c_str() + cursor);
+	throw (std::invalid_argument("invalid value"));
 }
 
 static
