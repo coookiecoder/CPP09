@@ -22,10 +22,10 @@ RPN & RPN::operator=(RPN & copy) {
 	return (*this);
 }
 
-long long int RPN::evaluate(void) {
-	std::stack<short> number;
-	long long int old = 0;
-	long long int number_buffer = 0;
+float RPN::evaluate(void) {
+	std::stack<float> number;
+	float old = 0;
+	float number_buffer = 0;
 	std::string buffer;
 	
 	this->data >> buffer;
@@ -45,6 +45,7 @@ long long int RPN::evaluate(void) {
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
 			number.push(number_buffer);
+			std::cout << number_buffer << std::endl;
 		}
 		else if (buffer[0] == '-') {
 			if (number.size() < 2)
@@ -57,6 +58,7 @@ long long int RPN::evaluate(void) {
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
 			number.push(number_buffer);
+			std::cout << number_buffer << std::endl;
 		}
 		else if (buffer[0] == '*') {
 			if (number.size() < 2)
@@ -69,6 +71,7 @@ long long int RPN::evaluate(void) {
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
 			number.push(number_buffer);
+			std::cout << number_buffer << std::endl;
 		}
 		else if (buffer[0] == '/') {
 			if (number.size() < 2)
@@ -81,10 +84,10 @@ long long int RPN::evaluate(void) {
 				throw (std::invalid_argument("overflow / underflow"));
 			number.pop();
 			number.push(number_buffer);
+			std::cout << number_buffer << std::endl;
 		}
 		else
 			throw (std::invalid_argument("error in the decoding of the RPN expression (invalide char input)"));
-		std::cout << number_buffer << std::endl;
 	
 		this->data >> buffer;
 	}

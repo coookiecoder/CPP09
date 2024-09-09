@@ -17,5 +17,5 @@ public:
 
 	RPN& operator=(RPN & copy);
 
-	long long int evaluate(void);	
+	float evaluate(void);	
 };
